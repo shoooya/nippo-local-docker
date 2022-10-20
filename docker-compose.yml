@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  attendance-web:
+    image: node:16.13
+    volumes:
+      - ${APP_PATH}:/var/www/attendance-server
+    working_dir: /var/www/attendance-server
+    user: node
+    ports:
+      - 3031:3000
+    environment:
+      - MYSQL_USER_NAME=attendance
+      - MYSQL_USER_PASSWORD=attendance
+    command: npm run dev
+  attendance-admin:
+    image: node:16.13
+    volumes:
+      - ${APP_PATH}:/var/www/attendance-server
+    working_dir: /var/www/attendance-server
+    user: node
+    ports:
+      - 3032:3000
+    environment:
+      - MYSQL_USER_NAME=attendance
+      - MYSQL_USER_PASSWORD=attendance
+    command: npm run admin
+  attendance-lp:
+    image: node:16.13
+    volumes:
+      - ${APP_PATH}:/var/www/attendance-server
+    working_dir: /var/www/attendance-server
+    user: node
+    ports:
+      - 3033:3000
+    environment:
+      - MYSQL_USER_NAME=attendance
+      - MYSQL_USER_PASSWORD=attendance
+    command: npm run lp
+  attendance-db:
+    image: mysql:5.7
+    volumes:
+      - attendance-db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: attendance
+      MYSQL_DATABASE: attendance
+      MYSQL_USER: attendance
+      MYSQL_PASSWORD: attendance
+  attendance-redis:
+    image: redis
+    volumes:
+      - attendance-redis_data:/data
+    ports:
+      - 6379:6379
+
+
+volumes:
+  attendance-db_data:
+  attendance-redis_data:
