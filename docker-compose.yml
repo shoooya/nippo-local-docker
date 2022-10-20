@@ -54,8 +54,27 @@ services:
       - attendance-redis_data:/data
     ports:
       - 6379:6379
+  attendance-migrate:
+    image: ruby:2.7.5
+    volumes:
+      - ${ENV_PATH}:/env
+    working_dir: /env/migration
+    # command: bundle install && ENV=local PASS=attendance sh ./migration.sh
+    tty: true
+  attendance-minio:
+    image: minio/minio
+    volumes:
+      - attendance-minio_data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      MINIO_ROOT_USER: attendance
+      MINIO_ROOT_PASSWORD: attendance
+    command: server --console-address ":9001" /data
 
 
 volumes:
   attendance-db_data:
   attendance-redis_data:
+  attendance-minio_data:
